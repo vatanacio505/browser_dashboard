@@ -1,0 +1,506 @@
+<!-- README
+    
+    Browser Environment Dashboard
+    
+    This dashboard provides a comprehensive interface to interact with and display information about
+    the browser, current page, screen dimensions, and navigation history. It utilizes JavaScript
+    browser objects (navigator, screen, document, location, window, history) to gather and display
+    real-time environmental data.
+    
+    Features:
+    - Part 0: Student profile information displayed in a styled header
+    - Part A: Browser and system information from navigator and screen objects
+    - Part B: Current page information and dynamic title modification
+    - Part C: Navigation controls (reload, redirect, history navigation)
+    - Part D: Responsive design with dynamic background color based on screen width
+    
+    All functionality is contained within a single HTML file with embedded CSS and JavaScript.
+    
+    -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Browser Environment Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 20px;
+            transition: background-color 0.3s ease;
+            min-height: 100vh;
+        }
+
+        /* ---Profile Header Section--- */
+        .profile-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .profile-header h1 {
+            font-size: 28px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+            padding-bottom: 10px;
+        }
+
+        .profile-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .profile-item {
+            padding: 8px 0;
+        }
+
+        .profile-item strong {
+            display: block;
+            font-size: 12px;
+            text-transform: uppercase;
+            opacity: 0.9;
+        }
+
+        .profile-item span {
+            display: block;
+            font-size: 14px;
+            margin-top: 4px;
+        }
+
+        /* ---Main Container--- */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* ---Section Styling--- */
+        .section {
+            background: white;
+            border-left: 5px solid #667eea;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .section h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 22px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .info-box {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 5px;
+            border-left: 3px solid #667eea;
+        }
+
+        .info-box label {
+            font-weight: bold;
+            color: #333;
+            display: block;
+            margin-bottom: 5px;
+            font-size: 12px;
+            text-transform: uppercase;
+            color: #666;
+        }
+
+        .info-box .value {
+            font-size: 14px;
+            color: #333;
+            word-break: break-all;
+        }
+
+        /* ----Buttons---- */
+        .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.3s ease;
+        }
+
+        button:hover {
+            background: #764ba2;
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        .button-danger {
+            background: #e74c3c;
+        }
+
+        .button-danger:hover {
+            background: #c0392b;
+        }
+
+        .button-success {
+            background: #27ae60;
+        }
+
+        .button-success:hover {
+            background: #229954;
+        }
+
+        /* ---Input Field--- */
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .input-group input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 5px rgba(102, 126, 234, 0.3);
+        }
+
+        /* ---Responsive--- */
+        @media (max-width: 768px) {
+            .profile-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!------------PART 0: PROFILE INFORMATION HEADER------------>
+        <div class="profile-header">
+            <h1>Student & Course Profile</h1>
+            <div class="profile-grid">
+                <div class="profile-item">
+                    <strong>Complete Name</strong>
+                    <span>Vinzent Alexis V. Tanacio</span>
+                </div>
+                <div class="profile-item">
+                    <strong>Sex</strong>
+                    <span>Male</span>
+                </div>
+                <div class="profile-item">
+                    <strong>Address</strong>
+                    <span>Bongliw, Pugay, San Jose, Camarines Sur</span>
+                </div>
+                <div class="profile-item">
+                    <strong>Course, Year & Section</strong>
+                    <span>Bachelor of Science in Information Technology, Year 2, Section D (BSIT2D)</span>
+                </div>
+                <div class="profile-item">
+                    <strong>School Name</strong>
+                    <span>Partido State University (Goa Campus)</span>
+                </div>
+                <div class="profile-item">
+                    <strong>Semester & Academic Year</strong>
+                    <span>2st Semester, 2025-2026</span>
+                </div>
+                <div class="profile-item">
+                    <strong>Subject Code & Title</strong>
+                    <span>PF2-EVENT DRIVEN PROGRAMMING</span>
+                </div>
+                <div class="profile-item">
+                    <strong>Subject Instructor</strong>
+                    <span>Arjay F. Abio</span>
+                </div>
+            </div>
+        </div>
+
+        <!------------PART A: BROWSER INFORMATION------------>
+        <div class="section">
+            <h2>A: Browser & System Information</h2>
+            <div class="info-grid">
+                <div class="info-box">
+                    <label>Browser Name & Version</label>
+                    <div class="value" id="browserInfo">Loading...</div>
+                </div>
+                <div class="info-box">
+                    <label>Platform (Operating System)</label>
+                    <div class="value" id="platformInfo">Loading...</div>
+                </div>
+                <div class="info-box">
+                    <label>Java Enabled</label>
+                    <div class="value" id="javaInfo">Loading...</div>
+                </div>
+                <div class="info-box">
+                    <label>Screen Resolution (W × H)</label>
+                    <div class="value" id="screenResolution">Loading...</div>
+                </div>
+                <div class="info-box">
+                    <label>Available Screen Size (W × H)</label>
+                    <div class="value" id="screenAvail">Loading...</div>
+                </div>
+                <div class="info-box">
+                    <label>Color Depth (bits per pixel)</label>
+                    <div class="value" id="colorDepth">Loading...</div>
+                </div>
+            </div>
+        </div>
+
+        <!------------PART B: PAGE INFORMATION & CONTROLS------------>
+        <div class="section">
+            <h2>B: Page Information & Controls</h2>
+            <div class="info-grid">
+                <div class="info-box">
+                    <label>Current URL</label>
+                    <div class="value" id="currentUrl">Loading...</div>
+                </div>
+                <div class="info-box">
+                    <label>Hostname</label>
+                    <div class="value" id="hostname">Loading...</div>
+                </div>
+                <div class="info-box">
+                    <label>Page Title</label>
+                    <div class="value" id="pageTitle">Loading...</div>
+                </div>
+            </div>
+
+            <div style="margin-top: 20px;">
+                <h3 style="color: #667eea; font-size: 16px; margin-bottom: 10px;">Change Page Title</h3>
+                <div class="input-group">
+                    <input type="text" id="titleInput" placeholder="Enter new page title">
+                    <button onclick="updatePageTitle()" class="button-success">Update Title</button>
+                </div>
+            </div>
+        </div>
+
+        <!------------PART C: NAVIGATION CONTROLS------------>
+        <div class="section">
+            <h2>C: Navigation Controls</h2>
+            <div class="button-group">
+                <button onclick="reloadPage()" class="button-success">↻ Reload Current Page</button>
+                <button onclick="redirectToUrl()" class="button-success">🔗 Redirect to Home Page</button>
+                <button onclick="goBack()" class="button-success">↩︎ Go Back</button>
+                <button onclick="goForward()" class="button-success">↪ Go Forward</button>
+            </div>
+            <div style="margin-top: 15px; max-width: 320px;">
+                <div class="info-box">
+                    <label>History Length</label>
+                    <div class="value" id="historyLength">Loading...</div>
+                </div>
+            </div>
+        </div>
+
+        <!------------PART D: RESPONSIVE DESIGN NOTE------------>
+        <div class="section">
+            <h2>D: Dynamic Styling</h2>
+            <div class="info-box">
+                <label>Current Screen Category</label>
+                <div class="value" id="screenCategory">Loading...</div>
+            </div>
+            <p style="margin-top: 15px; color: #666; font-size: 12px;">
+                📱 Mobile (&lt;600px): Blue | 📱 Tablet (600-991px): Green | 💻 Desktop (≥992px): Orange
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // ----------PART A: BROWSER INFORMATION----------
+        function initBrowserInfo() {
+            // Detect browser name and version
+            let browserName = "Unknown";
+            let browserVersion = "Unknown";
+            
+            if (navigator.userAgent.indexOf("Chrome") > -1 && navigator.userAgent.indexOf("Edge") === -1) {
+                browserName = "Google Chrome";
+                browserVersion = navigator.userAgent.split("Chrome/")[1].split(" ")[0];
+            } else if (navigator.userAgent.indexOf("Safari") > -1 && navigator.userAgent.indexOf("Chrome") === -1) {
+                browserName = "Safari";
+                browserVersion = navigator.userAgent.split("Version/")[1].split(" ")[0];
+            } else if (navigator.userAgent.indexOf("Firefox") > -1) {
+                browserName = "Mozilla Firefox";
+                browserVersion = navigator.userAgent.split("Firefox/")[1];
+            } else if (navigator.userAgent.indexOf("Edge") > -1) {
+                browserName = "Microsoft Edge";
+                browserVersion = navigator.userAgent.split("Edge/")[1];
+            }
+
+            // Display browser info
+            document.getElementById("browserInfo").textContent = `${browserName} ${browserVersion}`;
+
+            // Display platform
+            document.getElementById("platformInfo").textContent = navigator.platform;
+
+            // Display Java status
+            document.getElementById("javaInfo").textContent = navigator.javaEnabled() ? "✓ Enabled" : "✗ Disabled";
+
+            // Display screen resolution
+            document.getElementById("screenResolution").textContent = 
+                `${window.screen.width} × ${window.screen.height} pixels`;
+
+            // Display available screen size
+            document.getElementById("screenAvail").textContent = 
+                `${window.screen.availWidth} × ${window.screen.availHeight} pixels`;
+
+            // Display color depth
+            document.getElementById("colorDepth").textContent = 
+                `${window.screen.colorDepth} bits`;
+        }
+
+        // ----------PART B: PAGE INFORMATION & CONTROLS----------
+        function initPageInfo() {
+            // Display current URL
+            document.getElementById("currentUrl").textContent = window.location.href;
+
+            // Display hostname
+            document.getElementById("hostname").textContent = window.location.hostname;
+
+            // Display page title
+            document.getElementById("pageTitle").textContent = document.title;
+        }
+
+        function updatePageTitle() {
+            const newTitle = document.getElementById("titleInput").value.trim();
+            
+            if (newTitle === "") {
+                alert("Please enter a valid title!");
+                return;
+            }
+
+            // Update the document title
+            document.title = newTitle;
+            
+            // Update the displayed title
+            document.getElementById("pageTitle").textContent = newTitle;
+            
+            // Clear input field
+            document.getElementById("titleInput").value = "";
+            
+            alert(`Page title updated to: "${newTitle}"`);
+        }
+
+        // Allow Enter key to update title
+        document.addEventListener("DOMContentLoaded", function() {
+            document.getElementById("titleInput").addEventListener("keypress", function(event) {
+                if (event.key === "Enter") {
+                    updatePageTitle();
+                }
+            });
+        });
+
+
+        // ----------PART C: NAVIGATION CONTROLS----------
+        function reloadPage() {
+            // update display before reload (page will refresh)
+            updateHistoryLength();
+            window.location.reload();
+        }
+
+        function redirectToUrl() {
+            updateHistoryLength();
+            window.location.href = "index.html";
+        }
+
+        function goBack() {
+            updateHistoryLength();
+            window.history.back();
+        }
+
+        function goForward() {
+            updateHistoryLength();
+            window.history.forward();
+        }
+
+        function updateHistoryLength() {
+            const el = document.getElementById('historyLength');
+            if (!el) return;
+            try {
+                el.textContent = window.history.length;
+            } catch (e) {
+                el.textContent = 'N/A';
+            }
+        }
+
+
+        // ----------PART D: DYNAMIC STYLING & RESPONSIVE DESIGN----------
+        function applyResponsiveStyles() {
+            const screenWidth = window.innerWidth;
+            const bodyElement = document.body;
+            let category = "";
+
+            if (screenWidth < 600) {
+                // Mobile
+                bodyElement.style.backgroundColor = "#3498db"; // Blue
+                category = "📱 Mobile (< 600px) - Blue";
+            } else if (screenWidth >= 600 && screenWidth < 992) {
+                // Tablet
+                bodyElement.style.backgroundColor = "#27ae60"; // Green
+                category = "📱 Tablet (600-991px) - Green";
+            } else {
+                // Desktop
+                bodyElement.style.backgroundColor = "#f39c12"; // Orange
+                category = "💻 Desktop (≥ 992px) - Orange";
+            }
+
+            // Update category display
+            const screenCategoryElement = document.getElementById("screenCategory");
+            if (screenCategoryElement) {
+                screenCategoryElement.textContent = category;
+            }
+        }
+
+        // ----------INITIALIZATION & EVENT LISTENERS----------
+        window.addEventListener("load", function() {
+            initBrowserInfo();
+            initPageInfo();
+            applyResponsiveStyles();
+            updateHistoryLength();
+        });
+
+        // Apply responsive styles on window resize
+        window.addEventListener("resize", function() {
+            applyResponsiveStyles();
+        });
+    </script>
+</body>
+</html>
